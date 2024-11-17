@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Places of India Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .quiz-container {
+            background-color: rgb(174, 196, 194);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 320px; /* Reduced width for better compactness */
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 20px; /* Smaller header font */
+        }
+        .question {
+            font-size: 14px; /* Reduced font size for question text */
+            margin-bottom: 10px;
+        }
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+        .options li {
+            margin-bottom: 8px;
+        }
+        .options input {
+            margin-right: 8px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 14px; /* Smaller button font size */
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .result span {
+            font-weight: bold;
+            font-size: 16px; /* Smaller font size for the result */
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2>Places of India Quiz</h2>
+    <div id="quiz"></div>
+    <button onclick="submitQuiz()">Submit</button>
+    <div class="result" id="result"></div>
+</div>
+
+
+<script>
+    const allQuestions = [
+    { question: "Where is the Taj Mahal located?", options: ["Agra", "Delhi", "Mumbai", "Kolkata"], correctAnswer: "Agra" },
+    { question: "Which state is home to the city of Mysore?", options: ["Tamil Nadu", "Kerala", "Karnataka", "Andhra Pradesh"], correctAnswer: "Karnataka" },
+    { question: "What is the capital of India?", options: ["Mumbai", "Kolkata", "New Delhi", "Chennai"], correctAnswer: "New Delhi" },
+    { question: "Where is the famous Golden Temple located?", options: ["Amritsar", "Chandigarh", "Jaipur", "Ludhiana"], correctAnswer: "Amritsar" },
+    { question: "Which Indian city is known as the 'City of Joy'?", options: ["Kolkata", "Hyderabad", "Bangalore", "Chennai"], correctAnswer: "Kolkata" },
+    { question: "Where is the Gateway of India located?", options: ["Mumbai", "Delhi", "Goa", "Pune"], correctAnswer: "Mumbai" },
+    { question: "In which city is India Gate located?", options: ["New Delhi", "Kolkata", "Chennai", "Bangalore"], correctAnswer: "New Delhi" },
+    { question: "Which city is known as the Pink City?", options: ["Jaipur", "Delhi", "Udaipur", "Kolkata"], correctAnswer: "Jaipur" },
+    { question: "Where is the Qutub Minar located?", options: ["Delhi", "Agra", "Jaipur", "Chennai"], correctAnswer: "Delhi" },
+    { question: "Which state is home to the city of Kochi?", options: ["Kerala", "Tamil Nadu", "Goa", "Maharashtra"], correctAnswer: "Kerala" },
+    { question: "Where is the famous Sanchi Stupa located?", options: ["Bhopal", "Pune", "Mumbai", "Kolkata"], correctAnswer: "Bhopal" },
+    { question: "Which city is called the 'Silicon Valley of India'?", options: ["Bangalore", "Hyderabad", "Delhi", "Chennai"], correctAnswer: "Bangalore" },
+    { question: "Where is the Ajanta Caves located?", options: ["Maharashtra", "Goa", "Bihar", "Uttarakhand"], correctAnswer: "Maharashtra" },
+    { question: "Where is the Charminar located?", options: ["Hyderabad", "Chennai", "Lucknow", "Delhi"], correctAnswer: "Hyderabad" },
+    { question: "Which city is known as the 'City of Lakes'?", options: ["Udaipur", "Bhopal", "Delhi", "Hyderabad"], correctAnswer: "Udaipur" },
+    { question: "In which state is the city of Nashik?", options: ["Maharashtra", "Gujarat", "Madhya Pradesh", "Rajasthan"], correctAnswer: "Maharashtra" },
+    { question: "Where is the Elephanta Caves located?", options: ["Mumbai", "Kolkata", "Pune", "Goa"], correctAnswer: "Mumbai" },
+    { question: "Which state is the city of Bhopal located in?", options: ["Madhya Pradesh", "Uttar Pradesh", "Maharashtra", "Gujarat"], correctAnswer: "Madhya Pradesh" },
+    { question: "Which city is the capital of Tamil Nadu?", options: ["Chennai", "Hyderabad", "Bangalore", "Delhi"], correctAnswer: "Chennai" },
+    { question: "Where is the Nanda Devi peak located?", options: ["Uttarakhand", "Himachal Pradesh", "Uttar Pradesh", "Rajasthan"], correctAnswer: "Uttarakhand" },
+    { question: "Where is the Rishikesh city located?", options: ["Uttarakhand", "Himachal Pradesh", "Kerala", "Tamil Nadu"], correctAnswer: "Uttarakhand" },
+    { question: "Which city is known as the 'City of Pearls'?", options: ["Hyderabad", "Kochi", "Goa", "Chennai"], correctAnswer: "Hyderabad" },
+    { question: "In which state is the city of Patna located?", options: ["Bihar", "Uttar Pradesh", "Jharkhand", "West Bengal"], correctAnswer: "Bihar" },
+    { question: "Where is the Keoladeo National Park located?", options: ["Rajasthan", "Uttarakhand", "Madhya Pradesh", "Maharashtra"], correctAnswer: "Rajasthan" },
+    { question: "Where is the capital of Punjab?", options: ["Chandigarh", "Bhopal", "Lucknow", "Ahmedabad"], correctAnswer: "Chandigarh" },
+    { question: "Where is the Sundarbans National Park located?", options: ["West Bengal", "Orissa", "Tamil Nadu", "Kerala"], correctAnswer: "West Bengal" },
+    { question: "Which city is known as the 'City of Dreams'?", options: ["Mumbai", "Delhi", "Kolkata", "Bangalore"], correctAnswer: "Mumbai" },
+    { question: "Which city is known as the 'Manchester of India'?", options: ["Ahmedabad", "Bangalore", "Chennai", "Mumbai"], correctAnswer: "Ahmedabad" },
+    { question: "Where is the Hawa Mahal located?", options: ["Jaipur", "Kolkata", "Delhi", "Mumbai"], correctAnswer: "Jaipur" },
+    { question: "Which city is known as the 'City of Nawabs'?", options: ["Lucknow", "Hyderabad", "Jaipur", "Delhi"], correctAnswer: "Lucknow" },
+    { question: "Where is the famous Sun Temple located?", options: ["Konark", "Delhi", "Varanasi", "Udaipur"], correctAnswer: "Konark" },
+    { question: "Which city is famous for its tea gardens and is known as the 'Tea Capital of India'?", options: ["Darjeeling", "Munnar", "Kochi", "Kolkata"], correctAnswer: "Darjeeling" },
+    { question: "Where is the Kanha National Park located?", options: ["Madhya Pradesh", "Rajasthan", "Uttarakhand", "Gujarat"], correctAnswer: "Madhya Pradesh" },
+    { question: "Where is the Lotus Temple located?", options: ["Delhi", "Bangalore", "Chennai", "Kolkata"], correctAnswer: "Delhi" },
+    { question: "In which city is the Hill Station, Ooty located?", options: ["Tamil Nadu", "Kerala", "Madhya Pradesh", "Himachal Pradesh"], correctAnswer: "Tamil Nadu" },
+    { question: "Which city is known as the 'City of Spires'?", options: ["Bhopal", "Shillong", "Hyderabad", "Bangalore"], correctAnswer: "Shillong" },
+    { question: "Where is the Bandipur National Park located?", options: ["Karnataka", "Tamil Nadu", "Kerala", "Madhya Pradesh"], correctAnswer: "Karnataka" },
+    { question: "Where is the Chilika Lake located?", options: ["Orissa", "West Bengal", "Bihar", "Madhya Pradesh"], correctAnswer: "Orissa" },
+    { question: "Which is the highest peak in India?", options: ["Kangchenjunga", "Mount Everest", "Nanda Devi", "Makalu"], correctAnswer: "Kangchenjunga" },
+    { question: "Where is the city of Ahmedabad located?", options: ["Gujarat", "Rajasthan", "Maharashtra", "Madhya Pradesh"], correctAnswer: "Gujarat" },
+    { question: "Which city is known as the 'Garden City of India'?", options: ["Bangalore", "Kolkata", "Chennai", "Hyderabad"], correctAnswer: "Bangalore" },
+    { question: "Where is the Hill Station of Shimla located?", options: ["Himachal Pradesh", "Uttarakhand", "Jammu & Kashmir", "Madhya Pradesh"], correctAnswer: "Himachal Pradesh" },
+    { question: "Where is the Victoria Memorial located?", options: ["Kolkata", "Delhi", "Chennai", "Mumbai"], correctAnswer: "Kolkata" },
+    { question: "Which Indian city is known for its IT industry and is called the 'Silicon Valley'?", options: ["Bangalore", "Hyderabad", "Chennai", "Mumbai"], correctAnswer: "Bangalore" },
+    { question: "Where is the Rann of Kutch located?", options: ["Gujarat", "Madhya Pradesh", "Rajasthan", "Uttarakhand"], correctAnswer: "Gujarat" },
+    { question: "Which Indian state is famous for the city of Cochin (Kochi)?", options: ["Kerala", "Tamil Nadu", "Goa", "Karnataka"], correctAnswer: "Kerala" },
+    { question: "Where is the city of Varanasi located?", options: ["Uttar Pradesh", "Madhya Pradesh", "Himachal Pradesh", "Uttarakhand"], correctAnswer: "Uttar Pradesh" },
+    { question: "Where is the world's largest statue, the Statue of Unity located?", options: ["Gujarat", "Maharashtra", "Rajasthan", "Haryana"], correctAnswer: "Gujarat" },
+    { question: "Where is the famous hill station of Darjeeling located?", options: ["West Bengal", "Sikkim", "Himachal Pradesh", "Uttarakhand"], correctAnswer: "West Bengal" },
+    { question: "Where is the Ajmer Sharif Dargah located?", options: ["Rajasthan", "Uttar Pradesh", "Himachal Pradesh", "Madhya Pradesh"], correctAnswer: "Rajasthan" },
+    { question: "Where is the Jantar Mantar located?", options: ["Jaipur", "Delhi", "Udaipur", "Chennai"], correctAnswer: "Jaipur" },
+    { question: "Which city is known for the Dal Lake?", options: ["Srinagar", "Leh", "Kashmir", "Jammu"], correctAnswer: "Srinagar" },
+    { question: "Where is the city of Mysore located?", options: ["Karnataka", "Kerala", "Goa", "Madhya Pradesh"], correctAnswer: "Karnataka" },
+    { question: "Which city is home to the famous Qutub Minar?", options: ["Delhi", "Mumbai", "Kolkata", "Chennai"], correctAnswer: "Delhi" },
+    { question: "Which is the largest state by area in India?", options: ["Rajasthan", "Madhya Pradesh", "Uttar Pradesh", "Maharashtra"], correctAnswer: "Rajasthan" },
+    { question: "Where is the historic city of Hampi located?", options: ["Karnataka", "Rajasthan", "Madhya Pradesh", "Tamil Nadu"], correctAnswer: "Karnataka" },
+    { question: "Where is the beautiful city of Udaipur located?", options: ["Rajasthan", "Gujarat", "Uttarakhand", "Madhya Pradesh"], correctAnswer: "Rajasthan" },
+    { question: "Which city is famous for its ancient temples and is often called the 'Temple City of India'?", options: ["Bhubaneswar", "Kolkata", "Delhi", "Chennai"], correctAnswer: "Bhubaneswar" },
+    { question: "Where is the famous hill station of Mussoorie located?", options: ["Uttarakhand", "Himachal Pradesh", "Kashmir", "Sikkim"], correctAnswer: "Uttarakhand" },
+    { question: "Where is the city of Surat located?", options: ["Gujarat", "Maharashtra", "Tamil Nadu", "Andhra Pradesh"], correctAnswer: "Gujarat" },
+    { question: "Where is the Bandra-Worli Sea Link located?", options: ["Mumbai", "Chennai", "Kolkata", "Goa"], correctAnswer: "Mumbai" },
+    { question: "Which state is home to the city of Bikaner?", options: ["Rajasthan", "Madhya Pradesh", "Uttar Pradesh", "Gujarat"], correctAnswer: "Rajasthan" },
+    { question: "Which city is famous for the Kumbh Mela festival?", options: ["Allahabad", "Ujjain", "Haridwar", "Nasik"], correctAnswer: "Allahabad" },
+    { question: "Where is the Sula Vineyards located?", options: ["Nashik", "Mumbai", "Chennai", "Kolkata"], correctAnswer: "Nashik" },
+    { question: "Where is the famous Konark Sun Temple located?", options: ["Orissa", "Uttar Pradesh", "West Bengal", "Tamil Nadu"], correctAnswer: "Orissa" },
+    { question: "Where is the city of Jodhpur located?", options: ["Rajasthan", "Gujarat", "Haryana", "Madhya Pradesh"], correctAnswer: "Rajasthan" },
+    { question: "Where is the famous Red Fort located?", options: ["Delhi", "Mumbai", "Lucknow", "Kolkata"], correctAnswer: "Delhi" },
+    { question: "Where is the famous city of Agra located?", options: ["Uttar Pradesh", "Madhya Pradesh", "Gujarat", "Maharashtra"], correctAnswer: "Uttar Pradesh" },
+    { question: "Where is the Chhatrapati Shivaji Maharaj Terminus located?", options: ["Mumbai", "Kolkata", "Chennai", "Delhi"], correctAnswer: "Mumbai" },
+    { question: "Where is the city of Vadodara located?", options: ["Gujarat", "Maharashtra", "Rajasthan", "Uttarakhand"], correctAnswer: "Gujarat" },
+    { question: "Where is the famous Raja's Seat located?", options: ["Coorg", "Ooty", "Kodaikanal", "Manali"], correctAnswer: "Coorg" },
+    { question: "Where is the Rishikesh Yoga Festival held?", options: ["Uttarakhand", "Himachal Pradesh", "Uttar Pradesh", "Madhya Pradesh"], correctAnswer: "Uttarakhand" },
+    { question: "Where is the city of Ajmer located?", options: ["Rajasthan", "Gujarat", "Madhya Pradesh", "Uttarakhand"], correctAnswer: "Rajasthan" }
+];
+let shuffledQuestions = [];
+function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Select 25 random questions
+    function getRandomQuestions() {
+        shuffleArray(allQuestions);
+        return allQuestions.slice(0, 10);
+    }
+
+    // Function to load quiz questions
+    function loadQuiz() {
+        shuffledQuestions = getRandomQuestions(); // Store selected questions in shuffledQuestions
+    const quizContainer = document.getElementById('quiz');
+    quizContainer.innerHTML = '';
+
+    shuffledQuestions.forEach((questionData, index) => {
+        const questionElem = document.createElement('div');
+        questionElem.classList.add('question');
+        questionElem.innerHTML = `
+            <p>${index + 1}. ${questionData.question}</p>
+            <ul class="options">
+                ${questionData.options.map((option, i) => `
+                    <li>
+                        <input type="radio" name="question${index}" value="${option}" id="option${index}${i}">
+                        <label for="option${index}${i}">${option}</label>
+                    </li>
+                `).join('')}
+            </ul>
+        `;
+        quizContainer.appendChild(questionElem);
+    });
+}
+    // Function to submit the quiz and calculate the score
+    function submitQuiz() {
+        let score = 0;
+
+        // Check the user's answers against the shuffled questions
+        shuffledQuestions.forEach((questionData, index) => {
+            const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+            
+            if (selectedOption) {
+                // Debugging: log the selected answer and correct answer
+                console.log(`Question ${index + 1}: Selected = ${selectedOption.value}, Correct = ${questionData.correctAnswer}`);
+                
+                if (selectedOption.value === questionData.correctAnswer) {
+                    score++;
+                }
+            }
+        });
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `<span>Your score: ${score} / 10</span>`;
+    }
+
+    // Initialize quiz
+    window.onload = loadQuiz;
+</script>
+
+</body>
+</html>
